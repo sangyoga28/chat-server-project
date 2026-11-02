@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCP Chat Server | Admin Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="logo">TCP<span>CHAT</span></div>
+
+            <h2>Admin Dashboard</h2>
+            <p>Login untuk mengakses monitoring server dan client.</p>
+
+            <label for="adminPassword">Password Administrator</label>
+            <input
+                type="password"
+                id="adminPassword"
+                placeholder="Masukkan password"
+            >
+
+            <button id="loginButton">Login Dashboard</button>
+            <p class="error" id="loginError"></p>
+
+            <div class="demo-info">
+                <div class="demo-title">DEMO ACCESS</div>
+
+                <div class="demo-row">
+                    <span>Username</span>
+                    <strong>Administrator</strong>
+                </div>
+
+                <div class="demo-row">
+                    <span>Password</span>
+                    <strong>admin123</strong>
+                </div>
+
+                <small>
+                    Akun demo untuk keperluan pengujian dan demonstrasi proyek.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard hidden" id="dashboard">
+
+        <aside class="sidebar">
+            <div class="logo">TCP<span>CHAT</span></div>
+
+            <p class="sidebar-label">MENU UTAMA</p>
+
+            <a class="active" href="#overview">Overview</a>
+            <a href="#connections">Connection Pool</a>
+            <a href="#simulator">Client Simulator</a>
+            <a href="#activity">Activity Logs</a>
+
+            <div class="sidebar-bottom">
+                <span class="online-dot"></span>
+                Admin Online
+
+                <button id="logoutButton" class="logout-button">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1>Server Dashboard</h1>
+                    <p>Monitoring TCP & WebSocket connections</p>
+                </div>
+
+                <div class="server-status">
+                    <span class="online-dot"></span>
+                    SERVER ONLINE
+                </div>
+            </header>
+
+            <!-- STATISTICS -->
+            <section class="stats" id="overview">
+
+                <div class="stat-card">
+                    <p>Total Connected Clients</p>
+                    <h2 id="totalClients">0</h2>
+                    <small>Seluruh koneksi aktif</small>
+                </div>
+
+                <div class="stat-card">
+                    <p>TCP Connections</p>
+                    <h2 id="tcpCount">0</h2>
+                    <small>Raw TCP Socket</small>
+                </div>
+
+                <div class="stat-card">
+                    <p>WebSocket Connections</p>
+                    <h2 id="webCount">0</h2>
+                    <small>Browser Clients</small>
+                </div>
+
+                <div class="stat-card">
+                    <p>Server Status</p>
+                    <h2 class="status-text">ACTIVE</h2>
+                    <small>Listening on port 8080</small>
+                </div>
+
+            </section>
+
+            <!-- CONNECTION POOL -->
+            <section class="panel" id="connections">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Connection Pool</h2>
+                        <p>Daftar client yang sedang terhubung</p>
+                    </div>
+
+                    <span class="counter" id="connectionCounter">
+                        0 CLIENTS
+                    </span>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CLIENT ID</th>
+                                <th>CLIENT NAME</th>
+                                <th>TYPE</th>
+                                <th>IP : PORT</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="clientTable">
+                            <tr>
+                                <td colspan="6" class="empty">
+                                    Belum ada client terhubung.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SIMULATOR -->
+            <section class="panel" id="simulator">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Client Simulator</h2>
+                        <p>Setiap panel merupakan koneksi WebSocket tersendiri</p>
+                    </div>
+
+                    <button id="addClientButton">
+                        + Tambah Client
+                    </button>
+                </div>
+
+                <div id="clientPanels" class="client-grid"></div>
+            </section>
+
+            <!-- BROADCAST -->
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Admin Broadcast</h2>
+                        <p>Kirim pesan ke seluruh client yang terhubung</p>
+                    </div>
+                </div>
+
+                <form id="broadcastForm" class="broadcast-form">
+                    <input
+                        id="broadcastInput"
+                        placeholder="Tulis pesan broadcast..."
+                        maxlength="2000"
+                    >
+
+                    <button type="submit">Kirim Broadcast</button>
+                </form>
+            </section>
+
+            <!-- LOGS -->
+            <section class="panel" id="activity">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Activity Logs</h2>
+                        <p>Aktivitas koneksi dan pesan server secara real-time</p>
+                    </div>
+                </div>
+
+                <div id="activityLogs" class="logs">
+                    <p class="empty">Menunggu aktivitas server...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
